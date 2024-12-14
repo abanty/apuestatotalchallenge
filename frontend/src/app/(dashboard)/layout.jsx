@@ -49,7 +49,10 @@ const Layout = async ({ children }) => {
           <i className='ri-arrow-up-line' />
         </Button>
       </ScrollToTop>
+
+
       <Customizer dir={direction} />
+
     </Providers>
   )
 }

@@ -7,6 +7,7 @@ import { thunk } from 'redux-thunk'
 
 // Slice Imports
 import loginReducer from '@/redux-store/slices/login'
+import pokemonReducer from '@/redux-store/slices/pokemons'
 import medalReducer from '@/redux-store/slices/medals'
 
 const loginPersistConfig = {
@@ -16,6 +17,7 @@ const loginPersistConfig = {
 }
 
 const rootReducer = combineReducers({
+  pokemonReducer,
   medalReducer,
   loginReducer: persistReducer(loginPersistConfig, loginReducer)
 })

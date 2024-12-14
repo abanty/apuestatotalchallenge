@@ -23,7 +23,8 @@ import Badge from '@mui/material/Badge'
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack'
 import CircularProgress from '@mui/material/CircularProgress';
-
+import CardStatWithImage from '@components/card-statistics/Character'
+import DialogPokemon from './DialogPokemon'
 
 import { styled } from '@mui/material/styles';
 import classnames from 'classnames'
@@ -80,12 +81,18 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 500, ...prop
 
 const PokemonActions = ({
     dispatch,
-    medals
+    medals,
+    pokemons
 }) => {
 
+    const { medalsFilters } = medals;
+    const { qtyPokemons } = pokemons;
+
     const [fileInput, setFileInput] = useState('')
+    const [open, setOpen] = useState(false)
     const [pokemonData, setPokemonData] = useState([])
-    const [imgSrc, setImgSrc] = useState('/images/avatars/1.png')
+    const [currentMedal, setCurrentMedal] = useState('')
+    const [nextMedal, setNextMedal] = useState('')
     const [rowSelection, setRowSelection] = useState({})
     const [globalFilter, setGlobalFilter] = useState('')
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -93,11 +100,21 @@ const PokemonActions = ({
 
     useEffect(() => {
         setLoadingEvType(true)
-        if (medals?.filterMedal?.nextMedal?.name) {
-            setLoadingEvType(false)
+        try {
+            setTimeout(() => {
+                if (qtyPokemons && medalsFilters) {
+                    const currentMedal = medalsFilters.slice().reverse().find(medal => qtyPokemons >= medal.range);
+                    const nextMedal = medalsFilters.find(medal => qtyPokemons < medal.range);
+                    setCurrentMedal(currentMedal)
+                    setNextMedal(nextMedal)
+                    setLoadingEvType(false)
+                }
+            }, 1000);
+        } catch (error) {
+            console.error(error);
         }
-    }, [medals])
-
+    }, [qtyPokemons,
+        medalsFilters])
 
     const columns = useMemo(
         () => [
@@ -238,12 +255,7 @@ const PokemonActions = ({
 
     const handlePokemonCSV = () => {
         if (pokemonData.length > 0) {
-
-            console.log({ medals: medals.filterMedal });
-            console.log(medals.filterMedal.currentMedal);
-            console.log(medals.filterMedal.nextMedal);
-
-
+            setOpen(true)
         }
         setFileInput('')
     }
@@ -252,13 +264,42 @@ const PokemonActions = ({
     }
 
     return (
-        <Grid container spacing={2} sx={{ padding: 2 }}>
-            <Grid item xs={12} sm={6} md={5}>
-                <Paper >
-                    <Card>
-                        <CardContent className='mbe-5'>
-                            <div className='flex max-sm:flex-col items-center gap-6'>
-                                <img height={100} width={100} className='rounded' src={imgSrc} alt='Profile' />
+        <>
+            <Grid container justifyContent="center" spacing={5} sx={{ padding: 4 }}>
+
+                <Grid item xs={12} sm={6} md={6} className='self-end'>
+                    <CardStatWithImage
+                        stats='24'
+                        trend='positive'
+                        title='Total de Pokemons'
+                        trendNumber=''
+                        chipText='Al dia de HOY 😎'
+                        src='/images/illustrations/auth/ash.png'
+                    />
+                    <Card className='mt-2'>
+                        <CardContent className=''>
+                            <div className='flex max-sm:flex-col items-center gap-10'>
+                                {loadingEvType ? (<Stack spacing={0} sx={{ flexGrow: 1., alignItems: 'center' }}>
+                                    <svg width={0} height={0}>
+                                        <defs>
+                                            <linearGradient id="my_gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                <stop offset="0%" stopColor="#e01cd5" />
+                                                <stop offset="100%" stopColor="#1CB5E0" />
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                    <CircularProgress sx={{ 'svg circle': { stroke: 'url(#my_gradient)' } }} />
+                                </Stack>) :
+                                    <>
+                                        <div className='text-center'>
+                                            <Typography variant='h6'>
+                                                {!currentMedal ? 'SIN MEDALLA' : currentMedal.name}
+                                            </Typography>
+                                            <img width={'140'} className='rounded'
+                                                src={!currentMedal ? '/images/medallas/sin-medalla.png' : `/images/medallas/${currentMedal?.avatar_medal}.png`} alt='Profile' />
+                                        </div>
+                                    </>
+                                }
                                 <div className='flex flex-grow flex-col gap-4'>
                                     <Typography variant='h5'>
                                         Cuantos pokemones encontraste Hoy ??
@@ -276,7 +317,7 @@ const PokemonActions = ({
                                             />
                                         </Button>
 
-                                        <Button size='small' variant='contained' color='success' onClick={handlePokemonCSV} disabled={!pokemonData.length > 0}>
+                                        <Button size='small' variant='contained' color='info' onClick={handlePokemonCSV} disabled={!pokemonData.length > 0}>
                                             Enviar lista pokemons
                                         </Button>
                                     </div>
@@ -284,149 +325,129 @@ const PokemonActions = ({
                                 </div>
                             </div>
                         </CardContent>
-                        <CardContent className='mbe-5'>
-                            <div className='text-center'>
-                                {loadingEvType ? (<Stack spacing={2} sx={{ flexGrow: 1., alignItems: 'center', paddingTop: '3em' }}>
-                                    <svg width={0} height={0}>
-                                        <defs>
-                                            <linearGradient id="my_gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                                <stop offset="0%" stopColor="#e01cd5" />
-                                                <stop offset="100%" stopColor="#1CB5E0" />
-                                            </linearGradient>
-                                        </defs>
-                                    </svg>
-                                    <CircularProgress sx={{ 'svg circle': { stroke: 'url(#my_gradient)' } }} />
-                                </Stack>) :
-                                    <>
-                                        <Typography variant='h5'>
-                                            {!medals.filterMedal.currentMedal ? 'SIN MEDALLA' : medals.filterMedal.nextMedal.name}
-                                        </Typography>
-                                        <img height={200} width={200} className='rounded'
-                                            src={!medals.filterMedal.currentMedal ? '/images/medallas/sin-medalla.png' : `/images/medallas/${medals.filterMedal.nextMedal.avatar_medal}.png`} alt='Profile' />
-                                    </>
-                                }
-                            </div>
-                        </CardContent>
                     </Card>
-                </Paper>
-            </Grid>
 
-            <Grid item xs={12} sm={6} md={7}>
-                <Card className='flex-wrap !text-success'>
-                    <CardHeader
-                        title={
-                            <Chip label="MI LISTA DE POKEMONES CAPTURADOS" size='small' color={'primary'} />
-                        }
-                        action={
-                            <DebouncedInput
-                                value={globalFilter ?? ''}
-                                onChange={value => setGlobalFilter(String(value))}
-                                placeholder='Busqueda'
-                            />
-                        }
-                        className='flex-wrap gap-4'
-                    />
+                    <Card className='flex-wrap !text-success mt-2'>
+                        <CardHeader
+                            title={
+                                <Chip label="MI LISTA DE POKEMONES CAPTURADOS" size='small' color={'primary'} />
+                            }
+                            action={
+                                <DebouncedInput
+                                    value={globalFilter ?? ''}
+                                    onChange={value => setGlobalFilter(String(value))}
+                                    placeholder='Busqueda'
+                                />
+                            }
+                            className='flex-wrap gap-4'
+                        />
 
-                    <div className='overflow-x-auto'>
-                        <table className={tableStyles.table}>
-                            <thead>
-                                {table.getHeaderGroups().map(headerGroup => (
-                                    <tr key={headerGroup.id}>
-                                        {headerGroup.headers.map(header => (
-                                            <th key={header.id}>
-                                                {header.isPlaceholder ? null : (
-                                                    <>
-                                                        <div
-                                                            className={classnames({
-                                                                'flex items-center': header.column.getIsSorted(),
-                                                                'cursor-pointer select-none': header.column.getCanSort()
-                                                            })}
-                                                            onClick={header.column.getToggleSortingHandler()}
-                                                        >
-                                                            {flexRender(header.column.columnDef.header, header.getContext())}
-                                                            {{
-                                                                asc: <i className='ri-arrow-up-s-line text-xl' />,
-                                                                desc: <i className='ri-arrow-down-s-line text-xl' />
-                                                            }[header.column.getIsSorted()] ?? null}
-                                                        </div>
-                                                    </>
-                                                )}
-                                            </th>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </thead>
-                            {false ? (
-                                <tbody>
-                                    {/* < AppointmentTableSkeleton rowsNum={table.getFilteredRowModel().rows.length || 2} /> */}
-                                </tbody>
-                            ) : (
-                                pokemonData.length === 0 && table.getFilteredRowModel().rows.length === 0 ?
-                                    (<tbody>
-                                        <tr>
-                                            <td colSpan={table.getVisibleFlatColumns().length} className='text-center'>
-                                                No data available
-                                            </td>
+                        <div className='overflow-x-auto'>
+                            <table className={tableStyles.table}>
+                                <thead>
+                                    {table.getHeaderGroups().map(headerGroup => (
+                                        <tr key={headerGroup.id}>
+                                            {headerGroup.headers.map(header => (
+                                                <th key={header.id}>
+                                                    {header.isPlaceholder ? null : (
+                                                        <>
+                                                            <div
+                                                                className={classnames({
+                                                                    'flex items-center': header.column.getIsSorted(),
+                                                                    'cursor-pointer select-none': header.column.getCanSort()
+                                                                })}
+                                                                onClick={header.column.getToggleSortingHandler()}
+                                                            >
+                                                                {flexRender(header.column.columnDef.header, header.getContext())}
+                                                                {{
+                                                                    asc: <i className='ri-arrow-up-s-line text-xl' />,
+                                                                    desc: <i className='ri-arrow-down-s-line text-xl' />
+                                                                }[header.column.getIsSorted()] ?? null}
+                                                            </div>
+                                                        </>
+                                                    )}
+                                                </th>
+                                            ))}
                                         </tr>
-                                    </tbody>
-                                    ) :
+                                    ))}
+                                </thead>
+                                {false ? (
                                     <tbody>
-                                        {pokemonData.length > 0 && table
-                                            .getRowModel()
-                                            .rows.slice(0, table.getState().pagination.pageSize)
-                                            .map(row => {
-                                                return (
-                                                    <tr key={row.id} className={classnames({ selected: row.getIsSelected() })}>
-                                                        {row.getVisibleCells().map(cell => (
-                                                            <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
-                                                        ))}
-                                                    </tr>
-                                                )
-                                            })}
+                                        {/* < AppointmentTableSkeleton rowsNum={table.getFilteredRowModel().rows.length || 2} /> */}
                                     </tbody>
-                            )}
-                        </table>
-                    </div>
-                    <TablePagination
-                        rowsPerPageOptions={[10, 25, 50, 100]}
-                        component='div'
-                        className='border-bs'
-                        count={pokemonData.length > 0 && table.getFilteredRowModel().rows.length}
-                        rowsPerPage={table.getState().pagination.pageSize}
-                        page={pokemonData.length > 0 && table.getState().pagination.pageIndex}
-                        SelectProps={{
-                            inputProps: { 'aria-label': 'rows per page' }
-                        }}
-                        onPageChange={(_, page) => {
-                            table.setPageIndex(page)
-                        }}
-                        onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
-                    />
-                </Card>
+                                ) : (
+                                    pokemonData.length === 0 && table.getFilteredRowModel().rows.length === 0 ?
+                                        (<tbody>
+                                            <tr>
+                                                <td colSpan={table.getVisibleFlatColumns().length} className='text-center'>
+                                                    No data available
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        ) :
+                                        <tbody>
+                                            {pokemonData.length > 0 && table
+                                                .getRowModel()
+                                                .rows.slice(0, table.getState().pagination.pageSize)
+                                                .map(row => {
+                                                    return (
+                                                        <tr key={row.id} className={classnames({ selected: row.getIsSelected() })}>
+                                                            {row.getVisibleCells().map(cell => (
+                                                                <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+                                                            ))}
+                                                        </tr>
+                                                    )
+                                                })}
+                                        </tbody>
+                                )}
+                            </table>
+                        </div>
+                        <TablePagination
+                            rowsPerPageOptions={[10, 25, 50, 100]}
+                            component='div'
+                            className='border-bs'
+                            count={pokemonData.length > 0 && table.getFilteredRowModel().rows.length}
+                            rowsPerPage={table.getState().pagination.pageSize}
+                            page={pokemonData.length > 0 && table.getState().pagination.pageIndex}
+                            SelectProps={{
+                                inputProps: { 'aria-label': 'rows per page' }
+                            }}
+                            onPageChange={(_, page) => {
+                                table.setPageIndex(page)
+                            }}
+                            onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
+                        />
+                    </Card>
+                </Grid>
+                <Box
+                    sx={{
+                        position: 'fixed',
+                        bottom: 0,
+                        left: { xs: 0, md: '250px' },
+                        width: { xs: '100%', md: 'calc(100% - 250px)' },
+                        zIndex: 1000,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginBottom: '15px'
+                    }}
+                >
+                    <Button
+                        className="animate__animated animate__heartBeat animate__infinite infinite"
+                        variant="contained"
+                        color="primary"
+                        onClick={toggleDrawer(true)}
+                    >
+                        <i className="ri-trophy-fill" /> &#160; Ver mis Logros (Medallas)
+                    </Button>
+                </Box>
+
+                <MyMedals isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
             </Grid>
 
-            <Box
-                sx={{
-                    position: 'fixed',
-                    bottom: 10,
-                    left: 0,
-                    width: '100%',
-                    textAlign: 'center',
-                    zIndex: 1000,
-                    padding: 1,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}
-            >
-                <Button className='animate__animated animate__heartBeat animate__infinite infinite' variant="contained" color="primary" onClick={toggleDrawer(true)}>
-                    <i className='ri-trophy-fill' /> &#160; Ver mis Logros (Medallas)
-                </Button>
-            </Box>
-
-            <MyMedals isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
-        </Grid>
-
+            <DialogPokemon open={open}
+                closeDialog={setOpen} currentMedal={currentMedal} nextMedal={nextMedal} qtyPokemons={qtyPokemons} />
+        </>
     )
 }
 

@@ -48,10 +48,10 @@ const NavbarContent = () => {
               POKEDEX
             </b>
           </Link>
-          <Typography sx={{ color: 'text.primary', display: 'flex', alignItems: 'center' }}>
+          {/* <Typography sx={{ color: 'text.primary', display: 'flex', alignItems: 'center' }}>
             <GrainIcon sx={{ mr: 0.5 }} fontSize='inherit' />
             Actividad
-          </Typography>
+          </Typography> */}
         </Breadcrumbs>
       </div>
 

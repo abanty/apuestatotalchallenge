@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id            Int             @id @default(autoincrement())
+  credential_id String          @db.VarChar(100)
+  password      String          @db.VarChar(100)
+  first_name    String          @db.VarChar(100)
+  last_name     String?         @db.VarChar(100)
+  email         String          @db.VarChar(255)
+  created_at    DateTime?       @default(now()) @db.Timestamp(6)
+  updated_at    DateTime?       @default(now()) @db.Timestamp(6)
+  status        Boolean?        @default(true)
+  rol_id        Int?
+  medals_users  medals_users[]
+  pokemon_users pokemon_users[]
+  roles         roles?          @relation(fields: [rol_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "users_roles_fk")
+}
+
+model medals {
+  id           Int            @id(map: "medals_pk") @default(autoincrement())
+  name         String?        @db.VarChar(150)
+  range        Int?
+  avatar_medal String?
+  medals_users medals_users[]
+}
+
+model medals_users {
+  id         Int       @id(map: "medals_users_pk") @default(autoincrement())
+  user_id    Int?
+  medal_id   Int?
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @db.Timestamp(6)
+  status     Boolean?  @default(false)
+  medals     medals?   @relation(fields: [medal_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "medals_users_medals_fk")
+  users      users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "medals_users_users_fk")
+}
+
+model pokemon_users {
+  id            Int       @id(map: "pokemon_user_pk") @default(autoincrement())
+  pokemon_id    Int?
+  user_id       Int
+  pokemon_name  String?   @db.VarChar(100)
+  pokemon_power Int?
+  created_at    DateTime  @default(now()) @db.Timestamp(6)
+  updated_at    DateTime? @db.Timestamp(6)
+  users         users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pokemon_users_users_fk")
+}
+
+model roles {
+  id     Int      @id(map: "roles_pk") @default(autoincrement())
+  name   String?  @db.VarChar(100)
+  status Boolean? @default(true)
+  users  users[]
+}

@@ -20,7 +20,7 @@ const CardStatWithImage = props => {
             {`${trend === 'negative' ? '-' : '+'}${trendNumber}`}
           </Typography>
         </div>
-        <Chip label={chipText} color={chipColor} variant='tonal' size='small' />
+        <Chip label={chipText} color={chipColor} variant='tonal' size='normal' />
         <img src={src} alt={title} className='absolute block-end-0 inline-end-4 w-36' />
       </CardContent>
     </Card>

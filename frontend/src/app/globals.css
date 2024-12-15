@@ -146,11 +146,37 @@ code {
 }
 
 #nprogress .peg {
-  box-shadow:
-    0 0 10px rgb(105, 105, 105),
-    0 0 5px rgb(27, 27, 27);
+  box-shadow: 0 0 10px rgb(105, 105, 105), 0 0 5px rgb(27, 27, 27);
 }
 
 #nprogress .spinner {
   display: none;
 }
+
+/* ESTILOS PARA DRAWER CUSTOM */
+
+
+
+
+/* .buttonLevelPokemons {
+  position: absolute;
+  right: 0;
+  top: 30%;
+  border-start-start-radius: 50px;
+  border-end-start-radius: 50px;
+  padding: 8px;
+} */
+
+/* display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+position: absolute;
+inset-block-start: 20%;
+inset-inline-end: 100%;
+transform: translateY(-20%);
+padding: 8px;
+background-color: var(--primary-color);
+color: var(--mui-palette-primary-contrastText);
+border-start-start-radius: 50px;
+border-end-start-radius: 50px; */

@@ -16,13 +16,23 @@ import IconButton from '@mui/material/IconButton'
 import Draggable from 'react-draggable'
 import CatchingPokemonIcon from '@mui/icons-material/CatchingPokemon'
 import { addPokemonsColections } from './ApiPokemon'
+import { registerMedalsAssigned } from '../Medals/ApiMedals'
 import { setQtyPokemons } from '@/redux-store/slices/pokemons'
 
 const Transition = forwardRef(function Transition (props, ref) {
   return <Slide direction='up' ref={ref} {...props} />
 })
 
-const DialogPokemon = ({ open, closeDialog, nextMedal, qtyPokemons, pokemonData, usuario, dispatch }) => {
+const DialogPokemon = ({
+  open,
+  closeDialog,
+  nextMedal,
+  qtyPokemons,
+  pokemonData,
+  setPokemonData,
+  usuario,
+  dispatch
+}) => {
   /*____________________________
    │   * METHOD DRAG DIALOG     │
     ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
@@ -44,10 +54,29 @@ const DialogPokemon = ({ open, closeDialog, nextMedal, qtyPokemons, pokemonData,
       closeDialog(false)
       if (response.statusText === 'Created') {
         dispatch(setQtyPokemons(qtyPokemons))
+        setPokemonData([])
       }
     } catch (error) {
       console.error(error)
+    } finally {
+      await addMedalsAssigned()
     }
+  }
+
+  /*____________________________________
+   │   * METHOD ADD MEDALS ASIGGNED     │
+    ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
+  const addMedalsAssigned = async () => {
+    try {
+      if (nextMedal) {
+        const { rango, id } = nextMedal
+
+        if (qtyPokemons >= rango) {
+          const response = await registerMedalsAssigned(id, usuario.id)
+          console.log({ response })
+        }
+      }
+    } catch (error) {}
   }
 
   return (
@@ -139,7 +168,7 @@ const DialogPokemon = ({ open, closeDialog, nextMedal, qtyPokemons, pokemonData,
           <div className='flex' style={{ justifyContent: 'center', alignItems: 'center' }}>
             <CatchingPokemonIcon color='primary' />
             <Typography variant='body2' ml={3}>
-              Ahora tienes <b>{qtyPokemons}</b> Pokemons
+              Ahora tendrás <b>{qtyPokemons}</b> Pokemons
             </Typography>
           </div>
 

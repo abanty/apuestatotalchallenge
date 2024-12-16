@@ -168,7 +168,6 @@ const PokemonActions = ({ medals, pokemons, usuario, dispatch }) => {
   const handleCloseDialog = useCallback(() => {
     setOpen(false)
     setQtyPokemonsLocal(qtyPokemons)
-    setPokemonData([])
   }, [setOpen, setQtyPokemonsLocal, qtyPokemons])
 
   return (
@@ -367,6 +366,7 @@ const PokemonActions = ({ medals, pokemons, usuario, dispatch }) => {
           nextMedal={nextMedal}
           qtyPokemons={qtyPokemonsLocal}
           pokemonData={pokemonData}
+          setPokemonData={setPokemonData}
           usuario={usuario}
           dispatch={dispatch}
         />

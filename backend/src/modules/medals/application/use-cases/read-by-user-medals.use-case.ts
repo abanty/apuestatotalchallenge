@@ -1,22 +1,19 @@
-
-
 import { Injectable, Inject } from "@nestjs/common";
 import { MedalUserEntity } from "../../domain/entities/medal-user.entity";
 import { MedalUserRepository } from "../../domain/repositories/medal-user.repository.interface";
 
 @Injectable()
-export class RegisterMedalsUser {
+export class ReadByUserMedalsUseCase {
     constructor(
         @Inject('MedalUserRepository')
         private readonly medalUserRepository: MedalUserRepository
     ) { }
 
-    async execute(medals: Partial<MedalUserEntity>): Promise<MedalUserEntity | null> {
+    async execute(user_id: number): Promise<MedalUserEntity[] | null> {
 
-        const registerMedals = await this.medalUserRepository.create(medals);
-        return registerMedals
+        const readByUserMedals = await this.medalUserRepository.findAll(user_id)
+        return readByUserMedals
 
     }
+
 }
-
-

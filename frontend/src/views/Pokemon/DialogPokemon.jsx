@@ -48,7 +48,11 @@ const DialogPokemon = ({
    │   * METHOD ADD POKEMONS COLECTIONS     │
     ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
   const addPokemonsColection = async () => {
-    const fullData = pokemonData.map(pokes => ({ ...pokes, user_id: usuario.id, medal_id: nextMedal?.id }))
+
+    console.log('revisa esto en el back',nextMedal.id);
+    
+
+    const fullData = pokemonData.map(pokes => ({ ...pokes, user_id: usuario.id, medal_id: Number(nextMedal.id) | 1 }))
     try {
       const response = await addPokemonsColections(fullData)
       closeDialog(false)

@@ -48,7 +48,7 @@ const DialogPokemon = ({
    │   * METHOD ADD POKEMONS COLECTIONS     │
     ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
   const addPokemonsColection = async () => {
-    const fullData = pokemonData.map(pokes => ({ ...pokes, user_id: usuario.id }))
+    const fullData = pokemonData.map(pokes => ({ ...pokes, user_id: usuario.id, medal_id: nextMedal?.id }))
     try {
       const response = await addPokemonsColections(fullData)
       closeDialog(false)
@@ -69,9 +69,9 @@ const DialogPokemon = ({
   const addMedalsAssigned = async () => {
     try {
       if (nextMedal) {
-        const { rango, id } = nextMedal
+        const { range, id } = nextMedal
 
-        if (qtyPokemons >= rango) {
+        if (qtyPokemons >= range) {
           const response = await registerMedalsAssigned(id, usuario.id)
           console.log({ response })
         }

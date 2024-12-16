@@ -3,7 +3,12 @@
 import GestionActions from './GestionActions'
 
 const GestionIndex = () => {
-  return <GestionActions />
+  return (
+    <>
+      <br />
+      <GestionActions />
+    </>
+  )
 }
 
 export default GestionIndex

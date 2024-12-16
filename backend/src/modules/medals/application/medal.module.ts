@@ -28,7 +28,7 @@ import { ReadByUserMedalsUseCase } from './use-cases/read-by-user-medals.use-cas
         },
         {
             provide: 'MedalUserRepository',
-            useClass: PrismaMedalRepository,
+            useClass: PrismaMedalUserRepository,
         }
     ],
     exports: [ReadAllMedalsUseCase, RegisterMedalsUser, ReadByUserMedalsUseCase],

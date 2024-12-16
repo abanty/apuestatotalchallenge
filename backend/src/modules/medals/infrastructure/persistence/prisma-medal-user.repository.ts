@@ -15,6 +15,10 @@ export class PrismaMedalUserRepository implements MedalUserRepository {
 
     async create(medals: Partial<MedalUserEntity>): Promise<MedalUserEntity> {
 
+
+        console.log({ medals });
+
+
         const registerMedals = await this.prisma.medals_users.create({
             data: {
                 user_id: medals.user_id,

@@ -130,7 +130,8 @@ const StyledHeader = styled.header`
   }
 
   &.${verticalLayoutClasses.headerFloating} {
-    padding-block-start: 16px;
+    padding-block-start: 0px;
+    /* padding-block-start: 16px; */
 
     .${verticalLayoutClasses.navbar} {
       background-color: var(--mui-palette-background-paper);

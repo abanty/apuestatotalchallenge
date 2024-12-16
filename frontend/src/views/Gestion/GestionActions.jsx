@@ -20,7 +20,7 @@ const GestionActions = () => {
   }
 
   return (
-    <Card>
+    <Card>      
       <TabContext value={value}>
         <TabList onChange={handleChange} aria-label='card navigation examples'>
           <Tab value='1' label='Gestión de Medallas' />

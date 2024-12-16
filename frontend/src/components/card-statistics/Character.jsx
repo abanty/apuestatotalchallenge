@@ -15,8 +15,8 @@ const CardStatWithImage = props => {
         <Typography color='text.primary' className='font-semibold'>
           {title}
         </Typography>
-        <div className='flex items-center gap-2 pbs-4 pbe-1.5 is-1/2 flex-wrap'>
-          <Typography className='ml-2' variant='h2'>
+        <div className='flex items-center gap-2 pbs-6 pbe-1.5 is-1/2 flex-wrap'>
+          <Typography className='ml-2 pb-2' variant='h2'>
             {stats}
           </Typography>
           <Typography color={trend === 'negative' ? 'error.main' : 'success.main'}>
@@ -27,15 +27,7 @@ const CardStatWithImage = props => {
           <Typography variant='overline'>{chipText}</Typography>
           <img src={srcExra} width={40} className='mb-2' />
         </div>
-
-        {/* <Chip
-          avatar={<Avatar src={srcExra} alt='Img' sx={{ width: '44px', height: '44px' }} />}
-          label={chipText}
-          color={chipColor}
-          variant='tonal'
-          size='normal'
-        /> */}
-        <img src={src} alt={title} className='absolute block-end-12 inline-end-1 w-28 pb-2' />
+        <img src={src} alt={title} className='absolute block-end-12 inline-end-5 w-28 pb-2' />
       </CardContent>
     </Card>
   )

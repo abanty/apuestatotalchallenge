@@ -17,8 +17,16 @@ export const getTotalMedalsInfo = async () => {
 │   * METHOD REGISTER MEDALS ASIGGNED    │
  ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
 export const registerMedalsAssigned = async (medal_id, user_id) => {
+  const params = {
+    medal_id,
+    user_id
+  }
+
   try {
-    const data = await axios.post(`medal/add`, { medal_id, user_id })
+    const data = await axios.post(`medal-user/add`, params)
+
+    console.log({ data })
+
     return data
   } catch (error) {
     console.error(error)

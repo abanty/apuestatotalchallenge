@@ -211,7 +211,7 @@ const PokemonActions = ({ medals, pokemons, usuario, dispatch }) => {
                           <Typography variant='overline'>Nivel actual</Typography>
                         </div>
                         <img
-                          width={'140'}
+                          width={'120'}
                           className='rounded'
                           src={
                             !currentMedal

@@ -50,7 +50,7 @@ const Medals = () => {
             onClick={handleToggle}
           >
             <i className='ri-medal-line text-[30px] animate__animated animate__swing animate__infinite infinite' />{' '}
-            Medallas
+            <div className="ItextMedals">Medallas</div>
           </div>
 
           <div
@@ -59,8 +59,8 @@ const Medals = () => {
             })}
             onClick={handleToggleLogros}
           >
-            <i className='ri-trophy-fill text-[30px] animate__animated animate__swing animate__infinite infinite' /> Mis
-            logros
+            <i className='ri-trophy-fill text-[30px] animate__animated animate__swing animate__infinite infinite' />
+            <div className='ItextMedals'> Mis logros</div>
           </div>
         </>
       )}

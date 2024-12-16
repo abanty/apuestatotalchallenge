@@ -24,11 +24,12 @@ model users {
 }
 
 model medals {
-  id           Int            @id(map: "medals_pk") @default(autoincrement())
-  name         String?        @db.VarChar(150)
-  range        Int?
-  avatar_medal String?
-  medals_users medals_users[]
+  id            Int             @id(map: "medals_pk") @default(autoincrement())
+  name          String?         @db.VarChar(150)
+  range         Int?
+  avatar_medal  String?
+  medals_users  medals_users[]
+  pokemon_users pokemon_users[]
 }
 
 model medals_users {
@@ -50,6 +51,8 @@ model pokemon_users {
   pokemon_power String?   @db.VarChar(50)
   created_at    DateTime  @default(now()) @db.Timestamp(6)
   updated_at    DateTime? @db.Timestamp(6)
+  medal_id      Int?
+  medals        medals?   @relation(fields: [medal_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pokemon_users_medals_fk")
   users         users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pokemon_users_users_fk")
 }
 

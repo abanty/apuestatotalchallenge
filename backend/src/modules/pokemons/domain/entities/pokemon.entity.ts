@@ -7,5 +7,6 @@ export class PokemonEntity {
         public pokemon_power: string | null,
         public created_at: Date = new Date,
         public updated_at: Date | null,
+        public medal_id: number
     ) { }
 }

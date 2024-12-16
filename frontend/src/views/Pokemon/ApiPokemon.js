@@ -15,5 +15,28 @@ export const getAmountPokemons = async user_id => {
   }
 }
 
+/*____________________________________________
+│   * METHOD REGISTER POKEMONS COLLECTIONS    │
+ ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
+export const addPokemonsColections = async formData => {
+  try {
+    const data = await axios.post(`pokemon/add`, formData)
 
+    if (data) {
+      toast.success('Pokemons registrados 😎!', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light'
+      })
+    }
 
+    return data
+  } catch (error) {
+    console.error(error)
+  }
+}

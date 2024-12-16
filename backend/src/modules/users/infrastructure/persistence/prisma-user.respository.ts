@@ -47,10 +47,6 @@ export class PrismaUserRespository implements UserRepository {
     async findOne(credential_id: string): Promise<UserEntity | null> {
         try {
 
-
-            console.log({ credential_id });
-
-
             const signIn = await this.prisma.users.findFirst({
                 where: {
                     credential_id: credential_id

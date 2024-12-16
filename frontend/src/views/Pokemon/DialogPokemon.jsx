@@ -7,33 +7,47 @@ import Box from '@mui/material/Box'
 import LinearProgress from '@mui/material/LinearProgress'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
-import Link from '@mui/material/Link'
 import DialogContent from '@mui/material/DialogContent'
-import { Event, AccessTime, Phone, WhatsApp } from '@mui/icons-material'
 import EmojiEvents from '@mui/icons-material/EmojiEvents'
 import CustomIconButton from '@core/components/mui/IconButton'
-import Avatar from '@mui/material/Avatar'
-import Tooltip from '@mui/material/Tooltip'
 import Slide from '@mui/material/Slide'
 import Paper from '@mui/material/Paper'
 import IconButton from '@mui/material/IconButton'
 import Draggable from 'react-draggable'
 import CatchingPokemonIcon from '@mui/icons-material/CatchingPokemon'
+import { addPokemonsColections } from './ApiPokemon'
+import { setQtyPokemons } from '@/redux-store/slices/pokemons'
 
 const Transition = forwardRef(function Transition (props, ref) {
   return <Slide direction='up' ref={ref} {...props} />
 })
 
-const DialogPokemon = ({ open, closeDialog, currentMedal, nextMedal, subNextMedal, qtyPokemons }) => {
-  /*___________________________
-    │   * METHOD DRAG DIALOG     │
-    ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
+const DialogPokemon = ({ open, closeDialog, nextMedal, qtyPokemons, pokemonData, usuario, dispatch }) => {
+  /*____________________________
+   │   * METHOD DRAG DIALOG     │
+    ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
   const PaperComponent = props => {
     return (
       <Draggable handle='#draggable-dialog-title' cancel={'[class*="MuiDialogContent-root"]'}>
         <Paper {...props} />
       </Draggable>
     )
+  }
+
+  /*________________________________________
+   │   * METHOD ADD POKEMONS COLECTIONS     │
+    ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
+  const addPokemonsColection = async () => {
+    const fullData = pokemonData.map(pokes => ({ ...pokes, user_id: usuario.id }))
+    try {
+      const response = await addPokemonsColections(fullData)
+      closeDialog(false)
+      if (response.statusText === 'Created') {
+        dispatch(setQtyPokemons(qtyPokemons))
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
@@ -53,7 +67,7 @@ const DialogPokemon = ({ open, closeDialog, currentMedal, nextMedal, subNextMeda
           </Grid>
           <Grid item>
             <Typography variant='h6' color='primary'>
-              VERIFICACIÓN
+              INFORMACIÓN
             </Typography>
           </Grid>
         </Grid>
@@ -129,7 +143,7 @@ const DialogPokemon = ({ open, closeDialog, currentMedal, nextMedal, subNextMeda
             </Typography>
           </div>
 
-          <Button className='mt-4' color='info' size='small' variant='contained'>
+          <Button className='mt-4' color='info' size='small' variant='contained' onClick={addPokemonsColection}>
             <p style={{ marginLeft: '2px' }}>Aceptar</p>
           </Button>
         </Box>

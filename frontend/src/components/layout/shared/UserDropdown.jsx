@@ -28,7 +28,6 @@ import { persistor } from '@/redux-store'
 import { useSettings } from '@core/hooks/useSettings'
 import { logout } from '@/redux-store/slices/login'
 
-
 // Styled component for badge content
 const BadgeContentSpan = styled('span')({
   width: 8,
@@ -53,7 +52,6 @@ const UserDropdown = () => {
   const { settings } = useSettings()
   const { credential_id, first_name, email } = useSelector(state => state.loginReducer.user)
 
-
   const handleDropdownOpen = () => {
     !open ? setOpen(true) : setOpen(false)
   }
@@ -72,10 +70,11 @@ const UserDropdown = () => {
 
   const handleUserLogout = async () => {
     // Redirect to login page
-    dispatch(logout())
+
+    router.push('/login')
     persistor.purge()
     sessionStorage.clear()
-    router.push('/login')
+    dispatch(logout())
   }
 
   return (

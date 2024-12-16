@@ -44,10 +44,10 @@ model medals_users {
 
 model pokemon_users {
   id            Int       @id(map: "pokemon_user_pk") @default(autoincrement())
-  pokemon_id    Int?
+  pokemon_id    String?   @db.VarChar(100)
   user_id       Int
   pokemon_name  String?   @db.VarChar(100)
-  pokemon_power Int?
+  pokemon_power String?   @db.VarChar(50)
   created_at    DateTime  @default(now()) @db.Timestamp(6)
   updated_at    DateTime? @db.Timestamp(6)
   users         users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pokemon_users_users_fk")

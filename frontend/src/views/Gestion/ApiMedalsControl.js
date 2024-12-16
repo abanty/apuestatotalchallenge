@@ -3,13 +3,13 @@ import NProgress from 'nprogress'
 import axios from '@/utils/axios'
 
 /*___________________________________
-│   * METHOD GET ALL MEDALS INFO     │
+│   * METHOD .....................   │
  ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
 export const getTotalMedalsInfo = async () => {
 
   try {
-    const data = await axios.get('medal/findAllMedals')
-    return data
+    // const data = await axios.get('medal/findAllMedals')
+    // return data
 
   } catch (error) {
     console.error(error)

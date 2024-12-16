@@ -326,13 +326,13 @@ const colorSchemes = skin => {
           border: 'var(--mui-palette-divider)'
         },
         customColors: {
-          bodyBg: '#28243D',
-          chatBg: '#373452',
-          greyLightBg: '#373350',
+          bodyBg: '#1a1727',
+          chatBg: '#131220',
+          greyLightBg: '#1a1924',
           inputBorder: `rgb(var(--mui-mainColorChannels-dark) / 0.22)`,
-          tableHeaderBg: '#3D3759',
-          tooltipText: '#312D4B',
-          trackBg: '#474360'
+          tableHeaderBg: '#060608',
+          tooltipText: '#1a1920',
+          trackBg: '#1b1927'
         }
       }
     }

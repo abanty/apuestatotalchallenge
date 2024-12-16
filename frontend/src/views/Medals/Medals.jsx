@@ -22,11 +22,12 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 // Style Imports
 import styles from '../../@core/components/customizer/styles.module.css'
 
-const Medals = ({ breakpoint = 'lg' }) => {
+const Medals = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [isOpenLogros, setIsOpenLogros] = useState(false)
   const theme = useTheme()
   const medals = useSelector(state => state.medalReducer.medals)
+  const { rol_id } = useSelector(state => state.loginReducer.user)
 
   const isBelowLgScreen = useMedia('(max-width: 1200px)', false)
   const ScrollWrapper = isBelowLgScreen ? 'div' : PerfectScrollbar
@@ -40,25 +41,29 @@ const Medals = ({ breakpoint = 'lg' }) => {
         [styles.show]: isOpen || isOpenLogros
       })}
     >
-      <div
-        className={classnames(styles.toggler, {
-          [styles.customT]: isOpenLogros,
-        })}
-        onClick={handleToggle}
-      >
-        <i className='ri-medal-line text-[30px] animate__animated animate__swing animate__infinite infinite' /> Medallas
-      </div>
+      {rol_id == 2 && (
+        <>
+          <div
+            className={classnames(styles.toggler, {
+              [styles.customT]: isOpenLogros
+            })}
+            onClick={handleToggle}
+          >
+            <i className='ri-medal-line text-[30px] animate__animated animate__swing animate__infinite infinite' />{' '}
+            Medallas
+          </div>
 
-      <div
-        className={classnames(styles.togglerMedal, {
-          [styles.customT]: isOpen,
-        })}
-        onClick={handleToggleLogros}
-      >
-        <i className='ri-trophy-fill text-[30px] animate__animated animate__swing animate__infinite infinite' /> Mis
-        logros
-      </div>
-      {/* )} */}
+          <div
+            className={classnames(styles.togglerMedal, {
+              [styles.customT]: isOpen
+            })}
+            onClick={handleToggleLogros}
+          >
+            <i className='ri-trophy-fill text-[30px] animate__animated animate__swing animate__infinite infinite' /> Mis
+            logros
+          </div>
+        </>
+      )}
 
       <div className={styles.header}>
         <div className='flex flex-col'>

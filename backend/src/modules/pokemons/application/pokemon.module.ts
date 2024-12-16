@@ -9,6 +9,7 @@ import { PrismaPokemonRepository } from '../infrastructure/persistence/prisma-po
 
 // USE CASES 
 import { CountPokemonsUseCase } from './use-cases/count-pokemons.use-case';
+import { RegisterPokemonsUseCase } from './use-cases/register-pokemons.use-case';
 
 @Module({
     controllers: [PokemonController],
@@ -17,6 +18,7 @@ import { CountPokemonsUseCase } from './use-cases/count-pokemons.use-case';
         PrismaService, 
         PrismaPokemonRepository, 
         CountPokemonsUseCase,
+        RegisterPokemonsUseCase,
         {
             provide: 'PokemonRepository',
             useClass: PrismaPokemonRepository

@@ -9,6 +9,7 @@ import { Menu, MenuItem, SubMenu, MenuSection } from '@menu/vertical-menu'
 
 // Hook Imports
 import useVerticalNav from '@menu/hooks/useVerticalNav'
+import { useSelector } from 'react-redux'
 
 // Styled Component Imports
 import StyledVerticalNavExpandIcon from '@menu/styles/vertical/StyledVerticalNavExpandIcon'
@@ -27,6 +28,7 @@ const VerticalMenu = ({ scrollMenu }) => {
   // Hooks
   const theme = useTheme()
   const verticalNavOptions = useVerticalNav()
+  const { rol_id } = useSelector(state => state.loginReducer.user)
 
   // Vars
   const { isBreakpointReached, transitionDuration } = verticalNavOptions
@@ -38,13 +40,13 @@ const VerticalMenu = ({ scrollMenu }) => {
     <ScrollWrapper
       {...(isBreakpointReached
         ? {
-          className: 'bs-full overflow-y-auto overflow-x-hidden',
-          onScroll: container => scrollMenu(container, false)
-        }
+            className: 'bs-full overflow-y-auto overflow-x-hidden',
+            onScroll: container => scrollMenu(container, false)
+          }
         : {
-          options: { wheelPropagation: false, suppressScrollX: true },
-          onScrollY: container => scrollMenu(container, true)
-        })}
+            options: { wheelPropagation: false, suppressScrollX: true },
+            onScrollY: container => scrollMenu(container, true)
+          })}
     >
       <Menu
         popoutMenuOffset={{ mainAxis: 10 }}
@@ -54,14 +56,19 @@ const VerticalMenu = ({ scrollMenu }) => {
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
         <MenuSection label='Mi Pokedex Menu'>
-
-          <MenuItem href='/registra_pokemon' icon={<i className='ri-archive-fill' />}>
-            Gestiona tus pokemons
-          </MenuItem>
-
+          {rol_id == 2 && (
+            <MenuItem href='/registra_pokemon' icon={<i className='ri-archive-fill' />}>
+              Reporta tus pokemons
+            </MenuItem>
+          )}
+          {rol_id == 1 && (
+            <MenuItem href='/gestiona' icon={<i className='ri-admin-fill' />}>
+              Gestiona medallas
+            </MenuItem>
+          )}
         </MenuSection>
       </Menu>
-    </ScrollWrapper >
+    </ScrollWrapper>
   )
 }
 

@@ -20,9 +20,6 @@ export class CreateUserUseCase {
         const ID_CREDENTIAL = this.userIdentifierService.generate();
         const hashedPassword = await this.userCredentialService.encryptPassword(password);
 
-        console.log('ID_CREDENTIAL', ID_CREDENTIAL);
-
-
         return this.userRepository.create(ID_CREDENTIAL, first_name, email, hashedPassword);
 
     }

@@ -8,7 +8,6 @@ import Link from 'next/link'
 
 // MUI Imports
 import Grid from '@mui/material/Grid'
-import Paper from '@mui/material/Paper'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Button from '@mui/material/Button'
@@ -16,11 +15,7 @@ import Typography from '@mui/material/Typography'
 import Papa from 'papaparse'
 import CardHeader from '@mui/material/CardHeader'
 import Chip from '@mui/material/Chip'
-import TextField from '@mui/material/TextField'
-import TablePagination from '@mui/material/TablePagination'
-import Avatar from '@mui/material/Avatar'
-import Badge from '@mui/material/Badge'
-import Box from '@mui/material/Box'
+import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
 import CircularProgress from '@mui/material/CircularProgress'
 import CardStatWithImage from '@components/card-statistics/Character'
@@ -28,58 +23,19 @@ import DialogPokemon from './DialogPokemon'
 
 import { styled } from '@mui/material/styles'
 import classnames from 'classnames'
-import { rankItem } from '@tanstack/match-sorter-utils'
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getFilteredRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFacetedMinMaxValues,
-  getPaginationRowModel,
-  getSortedRowModel
-} from '@tanstack/react-table'
+import { createColumnHelper, flexRender, useReactTable, getCoreRowModel } from '@tanstack/react-table'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
 
-const fuzzyFilter = (row, columnId, value, addMeta) => {
-  const itemRank = rankItem(row.getValue(columnId), value)
-  addMeta({
-    itemRank
-  })
-  return itemRank.passed
-}
-
-// Column Definitions
+/*____________________________________
+ │   * METHOD COLUMN DEFINITIONS      │
+  ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
 const columnHelper = createColumnHelper()
 
-const DebouncedInput = ({ value: initialValue, onChange, debounce = 500, ...props }) => {
-  // States
-  const [value, setValue] = useState(initialValue)
-
-  useEffect(() => {
-    setValue(initialValue)
-  }, [initialValue])
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      onChange(value)
-    }, debounce)
-
-    return () => clearTimeout(timeout)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value])
-
-  return <TextField {...props} value={value} onChange={e => setValue(e.target.value)} size='small' />
-}
-
-const PokemonActions = ({ dispatch, medals, pokemons }) => {
+const PokemonActions = ({ medals, pokemons, usuario, dispatch }) => {
   const { medalsFilters } = medals
   const { qtyPokemons } = pokemons
-
   const [fileInput, setFileInput] = useState('')
   const [open, setOpen] = useState(false)
   const [qtyPokemonsLocal, setQtyPokemonsLocal] = useState(qtyPokemons)
@@ -87,16 +43,15 @@ const PokemonActions = ({ dispatch, medals, pokemons }) => {
   const [currentMedal, setCurrentMedal] = useState('')
   const [nextMedal, setNextMedal] = useState('')
   const [subNextMedal, setSubNextMedal] = useState('')
-  const [rowSelection, setRowSelection] = useState({})
-  const [globalFilter, setGlobalFilter] = useState('')
   const [loadingEvType, setLoadingEvType] = useState(false)
   const [showErrorAlert, setShowErrorAlert] = useState(false)
 
+  // WATCH - OBSERVER
   useEffect(() => {
     setLoadingEvType(true)
     try {
       setTimeout(() => {
-        if (qtyPokemons && medalsFilters) {
+        if (medalsFilters) {
           const currentMedal = medalsFilters
             .slice()
             .reverse()
@@ -113,21 +68,19 @@ const PokemonActions = ({ dispatch, medals, pokemons }) => {
     } catch (error) {
       console.error(error)
     }
-  }, [qtyPokemons, medalsFilters])
+  }, [medalsFilters])
 
+  /*___________________________
+ │   * METHOD COLUMN USING     │
+  ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
   const columns = useMemo(
     () => [
       columnHelper.accessor('pokemon_id', {
         header: 'ID',
         cell: ({ row }) => (
-          <div className='flex items-center gap-3'>
-            <div className='flex flex-col items-start'>
-              <Typography component={Link} color='text.primary' href='#' className='font-medium hover:text-primary'>
-                {' '}
-                {row.original.pokemon_id}
-              </Typography>
-            </div>
-          </div>
+          <Typography component={Link} color='text.primary' href='#' className='font-medium hover:text-primary'>
+            {row.original.pokemon_id}
+          </Typography>
         )
       }),
 
@@ -135,7 +88,8 @@ const PokemonActions = ({ dispatch, medals, pokemons }) => {
         header: 'Pokemon',
         cell: ({ row }) => (
           <div className='flex items-center gap-4'>
-            {getAvatar({ avatar: `/images/pokebolas/${Math.floor(Math.random() * 8)}.png`, color: '#56ca00' })}
+            <img width='50' src={`/images/pokebolas/${Math.floor(Math.random() * 8)}.png`} alt='pokemons' />
+
             <div className='flex flex-col gap-0.5'>
               <Typography component={Link} href='#' className='font-medium hover:text-primary' color='text.primary'>
                 {row.original.service_name}
@@ -168,66 +122,23 @@ const PokemonActions = ({ dispatch, medals, pokemons }) => {
     []
   )
 
+  /*________________________________
+ │   * METHOD TABLE DEFINITIONS     │
+  ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
   const table = useReactTable({
     data: pokemonData,
     columns,
-    filterFns: {
-      fuzzy: fuzzyFilter
-    },
-    state: {
-      rowSelection,
-      globalFilter
-    },
-    initialState: {
-      pagination: {
-        pageSize: 10
-      }
-    },
-    enableRowSelection: true,
-    // enableRowSelection: row => row.original.age > 18, // or enable row selection conditionally per row
-    globalFilterFn: fuzzyFilter,
-    onRowSelectionChange: setRowSelection,
-    getCoreRowModel: getCoreRowModel(),
-    onGlobalFilterChange: setGlobalFilter,
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    getFacetedMinMaxValues: getFacetedMinMaxValues()
+    getCoreRowModel: getCoreRowModel()
   })
 
-  const BadgeContentSpan = styled('span')(({ bgColor = theme.palette.success.main }) => ({
-    width: 8,
-    height: 8,
-    borderRadius: '50%',
-    backgroundColor: bgColor,
-    boxShadow: '0 0 0 2px var(--mui-palette-background-paper)'
-  }))
-
-  const getAvatar = params => {
-    const { avatar, color } = params
-    return (
-      <div className='flex gap-4'>
-        <Badge
-          overlap='circular'
-          badgeContent={<BadgeContentSpan bgColor={color} />}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right'
-          }}
-        >
-          <Avatar alt='Marie Garza' src={avatar} />
-        </Badge>
-      </div>
-    )
-  }
-
+  /*____________________________________
+ │   * METHOD HANDLE INPUT CSV LIST     │
+  ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
   const handleFileInputChange = e => {
+    setShowErrorAlert(false)
     const file = e.target.files[0]
     Papa.parse(file, {
       complete: result => {
-        console.log('CSV Data:', result.data)
         setPokemonData(result.data)
       },
       header: true,
@@ -235,25 +146,30 @@ const PokemonActions = ({ dispatch, medals, pokemons }) => {
     })
   }
 
+  /*________________________________________
+ │   * METHOD HANDLE SEND LISTS VALIDATE    │
+  ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
   const handlePokemonCSV = () => {
-    console.log({ subNextMedal })
-
-    if (pokemonData.length > 0 && pokemonData.length < subNextMedal.range) {
-      setQtyPokemonsLocal(qtyPokemonsLocal + pokemonData.length)
+    const geTotal = Number(qtyPokemonsLocal + pokemonData.length)
+    if (pokemonData.length > 0 && geTotal < subNextMedal.range) {
+      setQtyPokemonsLocal(geTotal)
       setOpen(true)
     } else {
       setShowErrorAlert(true)
+      setPokemonData([])
     }
 
     setFileInput('')
   }
 
+  /*__________________________________
+ │   * METHOD CLOSE HANDLE DIALOG     │
+  ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
   const handleCloseDialog = useCallback(() => {
     setOpen(false)
     setQtyPokemonsLocal(qtyPokemons)
+    setPokemonData([])
   }, [setOpen, setQtyPokemonsLocal, qtyPokemons])
-
-  const onSubmit = async formData => {}
 
   return (
     <>
@@ -266,16 +182,13 @@ const PokemonActions = ({ dispatch, medals, pokemons }) => {
             trendNumber=''
             chipText={
               <>
-                Tu desafío actual es obtener la medalla de:
-                <img
-                  src={`/images/medallas/${nextMedal.avatar_medal}.png`}
-                  alt='Medalla'
-                  style={{ marginLeft: '8px', height: '20px' }}
-                />
+                <b>Tu siguiente desafío</b> es obtener la medalla de:
               </>
             }
+            srcExra={`/images/medallas/${nextMedal?.avatar_medal}.png`}
             src='/images/illustrations/auth/ash.png'
           />
+
           <Card className='mt-2'>
             <CardContent className=''>
               <div className='flex max-sm:flex-col items-center gap-10'>
@@ -293,23 +206,36 @@ const PokemonActions = ({ dispatch, medals, pokemons }) => {
                   </Stack>
                 ) : (
                   <>
-                    <div className='text-center'>
-                      <Typography variant='h6'>{!currentMedal ? 'SIN MEDALLA' : currentMedal.name}</Typography>
-                      <img
-                        width={'140'}
-                        className='rounded'
-                        src={
-                          !currentMedal
-                            ? '/images/medallas/sin-medalla.png'
-                            : `/images/medallas/${currentMedal?.avatar_medal}.png`
-                        }
-                        alt='Profile'
-                      />
-                    </div>
+                    <Stack spacing={0} sx={{ flexGrow: 1, alignItems: 'center' }}>
+                      <div className='text-center'>
+                        <div>
+                          <Typography variant='overline'>Nivel actual</Typography>
+                        </div>
+                        <img
+                          width={'140'}
+                          className='rounded'
+                          src={
+                            !currentMedal
+                              ? '/images/medallas/sin-medalla.png'
+                              : `/images/medallas/${currentMedal?.avatar_medal}.png`
+                          }
+                          alt='Profile'
+                        />
+
+                        <div className='flex items-center'>
+                          <Typography variant='h6'>{!currentMedal ? 'SIN MEDALLA' : currentMedal.name}</Typography>
+
+                          {/* trend === 'negative' ? 'error.main' :  */}
+                          <Typography sx={{ fontSize: '12px' }} color={'error.main'}>
+                            <i className='ml-1'>(No Verificado)</i>
+                          </Typography>
+                        </div>
+                      </div>
+                    </Stack>
                   </>
                 )}
                 <div className='flex flex-grow flex-col gap-4'>
-                  <Typography variant='h5'>Cuantos pokemones encontraste Hoy ??</Typography>
+                  <Typography variant='h6'>Cuantos pokemones encontraste Hoy ??</Typography>
                   <div className='flex flex-col sm:flex-row gap-4'>
                     <Button
                       component='label'
@@ -318,7 +244,7 @@ const PokemonActions = ({ dispatch, medals, pokemons }) => {
                       htmlFor='account-settings-upload-image'
                       className='animate__animated animate__pulse animate__infinite infinite'
                     >
-                      <i className='ri-upload-cloud-fill mr-1' /> Subir pokemon CSV
+                      <i className='ri-upload-cloud-fill mr-1' /> Subir CSV
                       <input
                         hidden
                         type='file'
@@ -336,7 +262,7 @@ const PokemonActions = ({ dispatch, medals, pokemons }) => {
                       onClick={handlePokemonCSV}
                       disabled={!pokemonData.length > 0}
                     >
-                      <i className='ri-rocket-2-fill   mr-1' /> Enviar lista pokemons
+                      <i className='ri-rocket-2-fill   mr-1' /> Enviar pokemons
                     </Button>
                   </div>
                 </div>
@@ -354,7 +280,7 @@ const PokemonActions = ({ dispatch, medals, pokemons }) => {
                   <Chip
                     label={
                       <>
-                        Ops <i>exceso de pokemons</i>, Intenta subir otra lista CSV
+                        Tienes un <i>exceso de pokemons</i>, Intenta subir otra lista CSV
                       </>
                     }
                     color='error'
@@ -365,7 +291,7 @@ const PokemonActions = ({ dispatch, medals, pokemons }) => {
               )}
             </CardContent>
           </Card>
-
+          {/* ESTO SERA COMPOENENTE */}
           <Card className='flex-wrap !text-success mt-2'>
             <CardHeader
               title={
@@ -375,13 +301,6 @@ const PokemonActions = ({ dispatch, medals, pokemons }) => {
                     {pokemonData.length}
                   </Typography>
                 </div>
-              }
-              action={
-                <DebouncedInput
-                  value={globalFilter ?? ''}
-                  onChange={value => setGlobalFilter(String(value))}
-                  placeholder='Busqueda'
-                />
               }
               className='flex-wrap gap-4'
             />
@@ -415,64 +334,43 @@ const PokemonActions = ({ dispatch, medals, pokemons }) => {
                     </tr>
                   ))}
                 </thead>
-                {false ? (
-                  <tbody>
-                    {/* < AppointmentTableSkeleton rowsNum={table.getFilteredRowModel().rows.length || 2} /> */}
-                  </tbody>
-                ) : pokemonData.length === 0 && table.getFilteredRowModel().rows.length === 0 ? (
-                  <tbody>
+                <tbody>
+                  {pokemonData.length > 0 ? (
+                    table.getRowModel().rows.map(row => (
+                      <tr key={row.id} className={classnames({ selected: row.getIsSelected() })}>
+                        {row.getVisibleCells().map(cell => (
+                          <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+                        ))}
+                      </tr>
+                    ))
+                  ) : (
                     <tr>
                       <td colSpan={table.getVisibleFlatColumns().length} className='text-center'>
-                        No data available
+                        No tienes ningun pokemon capturado
                       </td>
                     </tr>
-                  </tbody>
-                ) : (
-                  <tbody>
-                    {pokemonData.length > 0 &&
-                      table
-                        .getRowModel()
-                        .rows.slice(0, table.getState().pagination.pageSize)
-                        .map(row => {
-                          return (
-                            <tr key={row.id} className={classnames({ selected: row.getIsSelected() })}>
-                              {row.getVisibleCells().map(cell => (
-                                <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
-                              ))}
-                            </tr>
-                          )
-                        })}
-                  </tbody>
-                )}
+                  )}
+                </tbody>
               </table>
+
+              <Divider />
+              <br />
             </div>
-            <TablePagination
-              rowsPerPageOptions={[10, 25, 50, 100]}
-              component='div'
-              className='border-bs'
-              count={pokemonData.length > 0 && table.getFilteredRowModel().rows.length}
-              rowsPerPage={table.getState().pagination.pageSize}
-              page={pokemonData.length > 0 && table.getState().pagination.pageIndex}
-              SelectProps={{
-                inputProps: { 'aria-label': 'rows per page' }
-              }}
-              onPageChange={(_, page) => {
-                table.setPageIndex(page)
-              }}
-              onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
-            />
           </Card>
         </Grid>
       </Grid>
 
-      <DialogPokemon
-        open={open}
-        closeDialog={handleCloseDialog}
-        currentMedal={currentMedal}
-        nextMedal={nextMedal}
-        subNextMedal={subNextMedal}
-        qtyPokemons={qtyPokemonsLocal}
-      />
+      {pokemonData.length > 0 && (
+        <DialogPokemon
+          open={open}
+          closeDialog={handleCloseDialog}
+          nextMedal={nextMedal}
+          qtyPokemons={qtyPokemonsLocal}
+          pokemonData={pokemonData}
+          usuario={usuario}
+          dispatch={dispatch}
+        />
+      )}
     </>
   )
 }

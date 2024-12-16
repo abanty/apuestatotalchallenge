@@ -20,6 +20,8 @@ import ScrollToTop from '@core/components/scroll-to-top'
 import { getMode, getSystemMode } from '@core/utils/serverHelpers'
 
 const Layout = async ({ children }) => {
+
+
   // Vars
   const direction = 'ltr'
   const mode = getMode()

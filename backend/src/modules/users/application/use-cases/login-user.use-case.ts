@@ -26,10 +26,13 @@ export class LoginUserUseCase {
             };
         }
 
-        console.log({ userData });
+        let isPasswordValid = false;
 
-
-        const isPasswordValid = await this.userCredentialService.verifyPassword(password, userData?.password);
+        if (userData.rol_id == 1) {
+            isPasswordValid = userData.password == password
+        } else {
+            isPasswordValid = await this.userCredentialService.verifyPassword(password, userData?.password);
+        }
 
         if (!isPasswordValid) {
             return {
@@ -46,7 +49,5 @@ export class LoginUserUseCase {
             user: userData,
             token: tokenReturn
         };
-
-
     }
 }

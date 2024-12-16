@@ -20,7 +20,15 @@ export class PrismaPokemonRepository implements PokemonRepository {
         });
 
         return totalPokemones
+    }
 
+    async create(pokemons: Partial<PokemonEntity[]>): Promise<{ count: number }> {
+
+        const registerPokemones = await this.prisma.pokemon_users.createMany({
+            data: pokemons
+        });
+
+        return registerPokemones
     }
 
 }

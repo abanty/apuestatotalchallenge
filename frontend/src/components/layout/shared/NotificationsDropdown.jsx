@@ -109,8 +109,6 @@ const NotificationDropdown = ({ notifications }) => {
     const newNotifications = [...notificationsState]
     const { id } = dataNotification
 
-    console.log({ dataNotification })
-
     // await updateNotifications(id, dataNotification)
 
     newNotifications[index].read = value
@@ -122,9 +120,6 @@ const NotificationDropdown = ({ notifications }) => {
     event.stopPropagation()
 
     const newNotifications = [...notificationsState]
-
-    console.log({ newNotifications })
-    console.log({ dataNotification })
 
     const { id } = dataNotification
     // const { user_id, branch_id } = await updateNotifications(id, dataNotification)

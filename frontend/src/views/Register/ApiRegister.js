@@ -33,11 +33,6 @@ export const addUser = async formData => {
 export const verifyEmail = async formData => {
 
   try {
-    // const data = await axios.post('user/add', formData)
-
-    // NProgress.done()
-    // console.log({ data });
-    // return data
 
   } catch (error) {
     console.error(error)

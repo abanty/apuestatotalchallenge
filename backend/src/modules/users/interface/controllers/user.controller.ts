@@ -26,9 +26,6 @@ export class UserController {
     async singin(@Body() body: { credential_id: string; password: string }) {
         try {
 
-            console.log({ body });
-
-
             const response = await this.loginUserUseCase.execute(body.credential_id, body.password);
             return response;
 

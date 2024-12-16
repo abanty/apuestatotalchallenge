@@ -15,17 +15,7 @@ export const LoginUser = async params => {
     })
 
     NProgress.start()
-
-
-    console.log({ params });
-
-
     const { data } = await axios.post('user/singin', params)
-
-
-    console.log({ data });
-
-
     return data
 
   } catch (e) {

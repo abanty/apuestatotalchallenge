@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
 // MUI Imports
 import Grid from '@mui/material/Grid'
 
-import { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setMedals, setQtyMedals } from '@/redux-store/slices/medals'
 import { setPokemons, setQtyPokemons } from '@/redux-store/slices/pokemons'
@@ -14,51 +14,54 @@ import { getTotalMedalsInfo } from '../Medals/ApiMedals'
 import PokemonActions from './PokemonActions'
 
 const PokemonIndex = () => {
+  // Hooks
+  const usuario = useSelector(state => state.loginReducer.user)
+  const medals = useSelector(state => state.medalReducer)
+  const pokemons = useSelector(state => state.pokemonReducer)
+  const dispatch = useDispatch()
 
-    // Hooks
-    const usuario = useSelector(state => state.loginReducer.user)
-    const medals = useSelector(state => state.medalReducer)
-    const pokemons = useSelector(state => state.pokemonReducer)
-    const dispatch = useDispatch()
+  useEffect(() => {
+    getMedalsInfo()
+    gettotalPokemonsByUser()
+  }, [pokemons])
 
-    useEffect(() => {
-        getMedalsInfo()
-        gettotalPokemonsByUser()
-    }, [])
-
-    /*____________________________________
+  /* _____________________________________
     │   * METHOD GET POKEMONS BY USER     │
-    ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
-    const gettotalPokemonsByUser = async () => {
-        try {
-            const { data } = await getAmountPokemons(usuario.id)
-            dispatch(setQtyPokemons(data))
-        } catch (error) {
-            console.error(error);
-        }
-    }
+     ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
+  const gettotalPokemonsByUser = useCallback(async () => {
+    try {
+      const { data } = await getAmountPokemons(usuario.id)
 
-    /*____________________________________
+      console.log({ data })
+      dispatch(setQtyPokemons(data))
+
+    } catch (error) {
+      console.error(error)
+    }
+  }, [dispatch, usuario.id])
+
+  /* _____________________________________
     │   * METHOD GET ALL MEDALS INFO      │
-    ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
-    const getMedalsInfo = async () => {
-        try {
+     ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
+  const getMedalsInfo = useCallback(async () => {
+    try {
+      const { data } = await getTotalMedalsInfo()
 
-            const { data } = await getTotalMedalsInfo()
-            dispatch(setMedals(data))
+      console.log({ data })
 
-        } catch (error) {
-            console.error(error);
-        }
+      dispatch(setMedals(data))
+    } catch (error) {
+      console.error(error)
     }
+  }, [dispatch])
 
-    return (
-        <Grid container spacing={0}>
-            <Grid item xs={12}>
-                <PokemonActions dispatch={dispatch} medals={medals} pokemons={pokemons} />
-            </Grid>
-        </Grid>
-    )
+  return (
+    <Grid container spacing={0}>
+      <Grid item xs={12}>
+        <PokemonActions medals={medals} pokemons={pokemons} usuario={usuario} dispatch={dispatch} />
+      </Grid>
+    </Grid>
+  )
 }
 
 export default PokemonIndex

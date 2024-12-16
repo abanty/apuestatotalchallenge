@@ -80,7 +80,6 @@ const Login = ({ mode }) => {
     borderedDarkIllustration
   )
 
-
   /*___________________________
   │   * METHOD FORM SIGN IN    │
   ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
@@ -93,11 +92,15 @@ const Login = ({ mode }) => {
 
       if (user) {
         dispatch(saveToken({ token, user }))
-        router.push('/registra_pokemon')
+
+        if (user.rol_id == 2) {
+          router.push('/registra_pokemon')
+        } else {
+          router.push('/gestiona')
+        }
       } else {
         setPostErrorMessage(msg)
       }
-
     } catch (e) {
       console.error(e)
     } finally {
@@ -107,7 +110,6 @@ const Login = ({ mode }) => {
 
   const handleClickShowPassword = () => setIsPasswordShown(show => !show)
 
-
   /*_____________________________________
 │   * METHOD RENDER COMPONENT CARDS    │
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
@@ -115,7 +117,7 @@ const Login = ({ mode }) => {
     return (
       <div className='flex flex-col gap-5 is-full sm:is-auto md:is-full sm:max-is-[400px] md:max-is-[unset]'>
         <div className='text-center'>
-          <img src="/images/illustrations/auth/pikachu.png" alt="Pikachu" />
+          <img src='/images/illustrations/auth/pikachu.png' alt='Pikachu' />
           <Typography className='mbs-1'>Inicia sesión ahora para iniciar este gran desafío y más aventuras</Typography>
         </div>
 
@@ -126,7 +128,7 @@ const Login = ({ mode }) => {
                 name='credential_id'
                 control={control}
                 rules={{
-                  required: 'Este campo es requerido.',
+                  required: 'Este campo es requerido.'
                 }}
                 render={({ field }) => (
                   <TextField
@@ -140,7 +142,6 @@ const Login = ({ mode }) => {
                   />
                 )}
               />
-
             </Grid>
             <Grid item xs={12}>
               <Controller
@@ -242,11 +243,7 @@ const Login = ({ mode }) => {
             className='max-bs-[750px] max-is-full bs-auto'
           />
         </div>
-        <Illustrations
-          image1={null}
-          image2={null}
-          maskImg={{ src: authBackground }}
-        />
+        <Illustrations image1={null} image2={null} maskImg={{ src: authBackground }} />
       </div>
       <div className='flex justify-center items-center bs-full bg-backgroundPaper !min-is-full p-6 md:!min-is-[unset] md:p-12 md:is-[480px]'>
         <Link className='absolute block-start-5 sm:block-start-[38px] inline-start-6 sm:inline-start-[38px]'>

@@ -1,7 +1,7 @@
 export class PokemonEntity {
     constructor(
         public id: number,
-        public pokemon_id: number | null,
+        public pokemon_id: string | null,
         public user_id: number,
         public pokemon_name: string | null,
         public pokemon_power: string | null,

@@ -43,7 +43,7 @@
   justify-content: center;
   cursor: pointer;
   position: absolute;
-  inset-block-start: 20%;
+  inset-block-start: 40%;
   inset-inline-end: 100%;
   transform: translateY(-20%);
   padding: 8px;
@@ -60,7 +60,7 @@
   cursor: pointer;
   width: max-content;
   position: absolute;
-  inset-block-start: 30%;
+  inset-block-start: 46%;
   inset-inline-end: 100%;
   transform: translateY(-20%);
   padding: 8px;

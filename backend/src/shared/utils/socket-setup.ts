@@ -10,7 +10,7 @@ export function setupSocketIO(app: INestApplication) {
   const socketManager = app.get(SocketManager);
 
   const io = new Server(httpServer, {
-    // transports: ['websocket', 'polling'],
+    transports: ['websocket', 'polling'],
     cors: {
       origin: '*',
       methods: ['GET', 'POST'],

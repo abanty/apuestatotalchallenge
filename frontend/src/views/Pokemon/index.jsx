@@ -2,16 +2,23 @@
 
 // MUI Imports
 import Grid from '@mui/material/Grid'
+import { io } from 'socket.io-client'
 
 import { useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setMedals, setQtyMedals } from '@/redux-store/slices/medals'
+import { setMedals, setQtyMedals, setMedalsByUser } from '@/redux-store/slices/medals'
 import { setPokemons, setQtyPokemons } from '@/redux-store/slices/pokemons'
 import { getAmountPokemons } from './ApiPokemon'
-import { getTotalMedalsInfo } from '../Medals/ApiMedals'
+import { getTotalMedalsInfo, getMedalsByUser } from '../Medals/ApiMedals'
 
 // Component Imports
 import PokemonActions from './PokemonActions'
+
+const socket = io(process.env.NEXT_PUBLIC_SERVER_API, {
+  transports: ['websocket'],
+  reconnectionAttempts: 5,
+  timeout: 20000
+})
 
 const PokemonIndex = () => {
   // Hooks
@@ -21,7 +28,17 @@ const PokemonIndex = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
+    socket.on('notificationListening', data => {
+      listMedalsUser()
+    })
+    return () => {
+      socket.off('notificationListening')
+    }
+  }, [])
+
+  useEffect(() => {
     getMedalsInfo()
+    listMedalsUser()
     gettotalPokemonsByUser()
   }, [pokemons])
 
@@ -34,7 +51,6 @@ const PokemonIndex = () => {
 
       console.log({ data })
       dispatch(setQtyPokemons(data))
-
     } catch (error) {
       console.error(error)
     }
@@ -50,6 +66,18 @@ const PokemonIndex = () => {
       console.log({ data })
 
       dispatch(setMedals(data))
+    } catch (error) {
+      console.error(error)
+    }
+  }, [dispatch])
+
+  /* _____________________________________
+    │   * METHOD GET ALL MEDALS INFO      │
+     ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
+  const listMedalsUser = useCallback(async () => {
+    try {
+      const { data } = await getMedalsByUser(usuario.id)
+      dispatch(setMedalsByUser(data))
     } catch (error) {
       console.error(error)
     }

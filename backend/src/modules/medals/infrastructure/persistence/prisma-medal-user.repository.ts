@@ -42,8 +42,11 @@ export class PrismaMedalUserRepository implements MedalUserRepository {
 
         const findAllMedalsUser = await this.prisma.medals_users.findMany({
             where: {
-                user_id: Number(user_id)
-
+                user_id: Number(user_id),
+                status:true
+            },
+            include:{
+                medals:true
             },
             orderBy: [
                 { id: 'asc' }
@@ -51,6 +54,43 @@ export class PrismaMedalUserRepository implements MedalUserRepository {
         });
 
         return findAllMedalsUser
+    }
+
+    async findAlladmin(): Promise<any[]> {
+
+        const findAllMedalsAdmin = await this.prisma.medals_users.findMany({
+            orderBy: [
+                { id: 'desc' }
+            ],
+            include: {
+                users: true,
+                medals: true
+            }
+        });
+
+        return findAllMedalsAdmin
+    }
+
+    async updateAdmin(id: number, user_id: number, status: boolean): Promise<MedalUserEntity> {
+
+        const updateMedalAdmin = await this.prisma.medals_users.update({
+            where: {
+                id: id,
+                user_id: user_id
+            },
+            data: {
+                status: status,
+            },
+        });
+
+        return new MedalUserEntity(
+            updateMedalAdmin.id,
+            updateMedalAdmin.user_id,
+            updateMedalAdmin.medal_id,
+            updateMedalAdmin.created_at,
+            updateMedalAdmin.updated_at,
+            updateMedalAdmin.status
+        );
     }
 
 }

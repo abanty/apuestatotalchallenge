@@ -7,9 +7,7 @@ import { useState } from 'react'
 import Chip from '@mui/material/Chip'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
-import ListItemText from '@mui/material/ListItemText'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
-import Avatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
 import { useMedia } from 'react-use'
 import { useSelector } from 'react-redux'
@@ -26,7 +24,7 @@ const Medals = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [isOpenLogros, setIsOpenLogros] = useState(false)
   const theme = useTheme()
-  const medals = useSelector(state => state.medalReducer.medals)
+  const { medals, medalsUser } = useSelector(state => state.medalReducer)
   const { rol_id } = useSelector(state => state.loginReducer.user)
 
   const isBelowLgScreen = useMedia('(max-width: 1200px)', false)
@@ -50,7 +48,7 @@ const Medals = () => {
             onClick={handleToggle}
           >
             <i className='ri-medal-line text-[30px] animate__animated animate__swing animate__infinite infinite' />{' '}
-            <div className="ItextMedals">Medallas</div>
+            <div className='ItextMedals'>Medallas</div>
           </div>
 
           <div
@@ -89,7 +87,7 @@ const Medals = () => {
                   medals.map(medal => (
                     <ListItem alignItems='flex-start' key={Number(medal.id)}>
                       <ListItemAvatar>
-                        <Avatar alt='medalla' src={`/images/medallas/${medal.avatar_medal}.png`} />
+                        <img alt='medalla' src={`/images/medallas/${medal.avatar_medal}.png`} width={50} />
                       </ListItemAvatar>
                       <div style={{ flex: 1 }}>
                         <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
@@ -114,7 +112,31 @@ const Medals = () => {
               </List>
             )}
 
-            {isOpenLogros && ''}
+            {isOpenLogros && (
+              <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                {medalsUser && medalsUser.length > 0 ? (
+                  medalsUser.map(data => (
+                    <ListItem alignItems='flex-start' key={Number(data.id)}>
+                      <ListItemAvatar>
+                        <img alt='medalla' src={`/images/medallas/${data.medals.avatar_medal}.png`} width={50} />
+                      </ListItemAvatar>
+                      <div style={{ flex: 1 }}>
+                        <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+                          { data.medals.name}
+                        </Typography>
+                        <div style={{ display: 'flex', marginRight: '4px' }}>
+                          <Typography sx={{ fontSize: '12px' }} color={'success.main'}>
+                            <i className='ml-1'>(Verificado)</i>
+                          </Typography>
+                        </div>
+                      </div>
+                    </ListItem>
+                  ))
+                ) : (
+                  <div>'No hay datos disponibles'</div>
+                )}
+              </List>
+            )}
           </div>
         </div>
       </ScrollWrapper>

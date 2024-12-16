@@ -9,7 +9,13 @@ db: challenge_dbpokemon
 esquema: schema=public
 
 BACKEND: NESTJS + DDD (CLEAN ARQUITECTURE)
+
 FRONT: NEXT 14 STARTER KIT 
 
+usuario admin:
 
+admin / admin 
 
+usuario normal : se puede crear es dinamico
+
+El deploying tambien esta en AWS - https://apiprojectsclient.demosroutek.online/

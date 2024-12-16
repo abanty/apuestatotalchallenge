@@ -13,6 +13,18 @@ export const getTotalMedalsInfo = async () => {
   }
 }
 
+/*___________________________________
+│   * METHOD GET USER MEDALS INFO     │
+ ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/
+export const getMedalsByUser = async user_id => {
+  try {
+    const data = await axios.get(`medal-user/findAllMedalsByUser/${user_id}`)
+    return data
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 /*_______________________________________
 │   * METHOD REGISTER MEDALS ASIGGNED    │
  ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*/

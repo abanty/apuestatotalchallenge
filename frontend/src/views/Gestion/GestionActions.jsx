@@ -16,10 +16,11 @@ import tableStyles from '@core/styles/table.module.css'
 
 const columnHelper = createColumnHelper()
 
-const socket = io(process.env.NEXT_PUBLIC_SERVER_API, {
+const socket = io(process.env.NEXT_PUBLIC_SERVER_API_SOCKET, {
   transports: ['websocket'],
+  reconnection: true,
   reconnectionAttempts: 5,
-  timeout: 20000
+  reconnectionDelay: 1000,
 })
 
 const GestionActions = ({ data, handleUpdate, handleReload }) => {

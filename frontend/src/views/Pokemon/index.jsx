@@ -14,10 +14,11 @@ import { getTotalMedalsInfo, getMedalsByUser } from '../Medals/ApiMedals'
 // Component Imports
 import PokemonActions from './PokemonActions'
 
-const socket = io(process.env.NEXT_PUBLIC_SERVER_API, {
+const socket = io(process.env.NEXT_PUBLIC_SERVER_API_SOCKET, {
   transports: ['websocket'],
+  reconnection: true,
   reconnectionAttempts: 5,
-  timeout: 20000
+  reconnectionDelay: 1000,
 })
 
 const PokemonIndex = () => {

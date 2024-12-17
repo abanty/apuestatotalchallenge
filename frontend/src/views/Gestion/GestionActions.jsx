@@ -16,8 +16,7 @@ import tableStyles from '@core/styles/table.module.css'
 
 const columnHelper = createColumnHelper()
 
-// const socket = io(process.env.NEXT_PUBLIC_SERVER_API, {
-const socket = io('http://44.217.34.40:4000', {
+const socket = io(process.env.NEXT_PUBLIC_SERVER_API, {
   transports: ['websocket'],
   reconnectionAttempts: 5,
   timeout: 20000

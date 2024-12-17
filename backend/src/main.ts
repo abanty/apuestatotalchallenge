@@ -6,14 +6,14 @@ async function main() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
 
-  const httpServer = setupSocketIO(app);
+  // Configurar Socket.IO
+  setupSocketIO(app);
 
-  const PORT = process.env.PORT ?? 4000;
+  const PORT = process.env.PORT || 4000;
 
-  await app.init();
-
-  httpServer.listen(PORT, () => {
+  await app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
   });
 }
+
 main();

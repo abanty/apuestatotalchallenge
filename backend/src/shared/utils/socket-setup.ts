@@ -4,8 +4,9 @@ import { SocketManager } from '../socket/socket-manager.service';
 import { createServer } from 'http';
 
 export function setupSocketIO(app: INestApplication) {
-    const httpServer = createServer(app.getHttpServer());
-  // const httpServer = app.getHttpServer();
+
+  const expressApp = app.getHttpAdapter().getInstance();
+  const httpServer = createServer(expressApp);
 
   const socketManager = app.get(SocketManager);
 

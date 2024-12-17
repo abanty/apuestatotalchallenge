@@ -5,16 +5,13 @@ import { createServer } from 'http';
 
 export function setupSocketIO(app: INestApplication) {
 
-  const expressApp = app.getHttpAdapter().getInstance();
-  const httpServer = createServer(expressApp);
-
+  const httpServer = app.getHttpServer();
   const socketManager = app.get(SocketManager);
 
   const io = new Server(httpServer, {
     transports: ['websocket', 'polling'],
     cors: {
-      // origin: '*',
-      origin: ['http://localhost:3000', 'https://apiprojects.demosrouttek.online'],
+      origin: '*',
       methods: ['GET', 'POST'],
     },
   });

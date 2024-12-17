@@ -13,7 +13,8 @@ export function setupSocketIO(app: INestApplication) {
   const io = new Server(httpServer, {
     transports: ['websocket', 'polling'],
     cors: {
-      origin: '*',
+      // origin: '*',
+      origin: ['http://localhost:3000', 'https://apiprojects.demosrouttek.online'],
       methods: ['GET', 'POST'],
     },
   });
